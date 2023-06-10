@@ -5,7 +5,9 @@ nginx -g "daemon off;" &
 
 # 抓取 m3u8 串流並轉換為 HLS
 ffmpeg -i "$HLS_URL" \
-    -c:v copy -c:a copy -f hls -hls_time 6 -hls_list_size 6 -hls_flags delete_segments /tmp/hls/output.m3u8 \
+    -c:v copy -c:a copy -f hls -ignore_io_errors 1 -hls_playlist_type event /tmp/hls/output.m3u8 \
+
+ffmpeg -i "/tmp/hls/output.m3u8" \
     -c:v copy -c:a copy /tmp/output.mp4
 
 # 上傳至 Google Drive
@@ -13,4 +15,4 @@ ffmpeg -i "$HLS_URL" \
 
 # 阻塞容器，以保持運行
 # tail -f /dev/null
-sleep 30s 
+sleep 1m 
